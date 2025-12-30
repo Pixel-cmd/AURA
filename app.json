@@ -1,0 +1,49 @@
+{
+  "expo": {
+    "name": "AURA",
+    "slug": "aura",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "resizeMode": "contain",
+      "backgroundColor": "#6B46C1"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.pixelcmd.aura",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "AURA needs your location to connect you with nearby helpers when you need assistance.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "AURA needs your location to connect you with nearby helpers, even when the app is in the background.",
+        "UIBackgroundModes": [
+          "location"
+        ]
+      }
+    },
+    "android": {
+      "package": "com.pixelcmd.aura",
+      "adaptiveIcon": {
+        "backgroundColor": "#6B46C1"
+      },
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_BACKGROUND_LOCATION"
+      ]
+    },
+    "web": {
+    },
+    "plugins": [
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow AURA to use your location to connect you with nearby helpers."
+        }
+      ]
+    ]
+  }
+}
+
