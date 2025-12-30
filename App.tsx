@@ -11,7 +11,7 @@ if (!isExpoGo && process.env.EXPO_PUBLIC_SENTRY_DSN) {
       debug: __DEV__, // Enable debug mode in development
       environment: __DEV__ ? 'development' : 'production',
       tracesSampleRate: __DEV__ ? 1.0 : 0.1, // 100% in dev, 10% in production
-      beforeSend(event, hint) {
+      beforeSend(event: any, hint: any) {
         // Filter out known non-critical errors
         if (event.exception) {
           const error = hint.originalException;
