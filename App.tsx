@@ -6,16 +6,27 @@ import { ErrorBoundary } from './app/components/ErrorBoundary';
 import './utils/i18n'; // Initialize i18n
 import { notificationService } from './services/notifications/notificationService';
 import { logger } from './utils/logger';
-import { initSentry } from './utils/sentry';
+
+// Only load Sentry initialization if not in Expo Go
+// This prevents bundling Sentry in Expo Go (which causes the promise/setimmediate/done error)
+const isExpoGo = !Constants?.executionEnvironment || Constants.executionEnvironment === 'storeClient';
 
 export default function App() {
   useEffect(() => {
     // Initialize Sentry (only in development builds, not Expo Go)
-    initSentry();
-    
-    // Initialize logger with Sentry
-    if (process.env.EXPO_PUBLIC_SENTRY_DSN) {
-      logger.initSentry();
+    // Use dynamic require to prevent bundling in Expo Go
+    if (!isExpoGo) {
+      try {
+        const { initSentry } = require('./utils/sentry');
+        initSentry();
+        // Initialize logger with Sentry
+        if (process.env.EXPO_PUBLIC_SENTRY_DSN) {
+          logger.initSentry();
+        }
+      } catch (e) {
+        // Sentry not available (this is fine in Expo Go)
+        console.log('Sentry initialization skipped (not available in Expo Go)');
+      }
     }
 
     // Setup notification handlers (gracefully handles Expo Go limitations)
