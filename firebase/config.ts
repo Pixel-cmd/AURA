@@ -4,30 +4,16 @@ import { getFirestore, Firestore } from 'firebase/firestore';
 import { getFunctions, Functions } from 'firebase/functions';
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 
-// Create a custom persistence adapter for React Native
-// Firebase v12 doesn't have getReactNativePersistence, so we create our own
-const createReactNativePersistence = (storage: typeof ReactNativeAsyncStorage) => {
-  return {
-    type: 'LOCAL' as const,
-    _isAvailable: async () => {
-      try {
-        await storage.getItem('__test__');
-        return true;
-      } catch {
-        return false;
-      }
-    },
-    _set: async (key: string, value: string) => {
-      await storage.setItem(key, value);
-    },
-    _get: async (key: string) => {
-      return await storage.getItem(key);
-    },
-    _remove: async (key: string) => {
-      await storage.removeItem(key);
-    },
-  };
-};
+// Try to get getReactNativePersistence - it might exist at runtime even if not in TypeScript definitions
+// @ts-ignore - Function may exist at runtime per Firebase warning message
+let getReactNativePersistence: any;
+try {
+  const authModule = require('firebase/auth');
+  getReactNativePersistence = authModule.getReactNativePersistence;
+} catch (e) {
+  // Function doesn't exist, we'll use a workaround
+  getReactNativePersistence = null;
+}
 
 // Firebase configuration
 // TODO: Replace with your actual Firebase config
@@ -63,12 +49,18 @@ if (isFirebaseConfigured) {
 
     // Initialize Auth with AsyncStorage persistence for React Native
     try {
-      // Use custom persistence adapter for React Native
-      // Firebase v12.7.0 doesn't have getReactNativePersistence, so we use a custom adapter
-      auth = initializeAuth(app, {
-        // @ts-ignore - Custom persistence adapter for React Native
-        persistence: createReactNativePersistence(ReactNativeAsyncStorage),
-      });
+      if (getReactNativePersistence) {
+        // Use getReactNativePersistence if available (might exist at runtime)
+        auth = initializeAuth(app, {
+          // @ts-ignore - Function exists at runtime
+          persistence: getReactNativePersistence(ReactNativeAsyncStorage),
+        });
+      } else {
+        // Fallback: Initialize without explicit persistence
+        // Firebase should detect React Native and use AsyncStorage automatically
+        // But we'll get a warning - this is a known Firebase v12.7.0 limitation
+        auth = initializeAuth(app);
+      }
     } catch (error: any) {
       // If auth is already initialized, get the existing instance
       if (error.code === 'auth/already-initialized') {
