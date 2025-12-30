@@ -12,38 +12,9 @@ const isExpoGo = !Constants?.executionEnvironment || Constants.executionEnvironm
 
 export default function App() {
   useEffect(() => {
-    // Initialize Sentry ONLY in development builds (NOT in Expo Go)
-    // We check Expo Go first and never touch Sentry code if we are
-    if (!isExpoGo && process.env.EXPO_PUBLIC_SENTRY_DSN) {
-      try {
-        // Inline Sentry initialization - never import utils/sentry.ts
-        // This prevents Metro from analyzing any Sentry code
-        const Sentry = require('@sentry/react-native');
-        Sentry.init({
-          dsn: process.env.EXPO_PUBLIC_SENTRY_DSN,
-          debug: __DEV__,
-          environment: __DEV__ ? 'development' : 'production',
-          tracesSampleRate: __DEV__ ? 1.0 : 0.1,
-          beforeSend(event: any, hint: any) {
-            if (event.exception) {
-              const error = hint.originalException;
-              if (error && typeof error === 'object' && 'message' in error) {
-                const errorMessage = String(error.message);
-                if (errorMessage.includes('expo-notifications') && errorMessage.includes('Expo Go')) {
-                  return null;
-                }
-              }
-            }
-            return event;
-          },
-        });
-        // Initialize logger with Sentry
-        logger.initSentry();
-      } catch (e) {
-        // Sentry not available - this is fine
-        console.log('Sentry initialization skipped');
-      }
-    }
+    // Sentry is not installed for Expo Go compatibility
+    // It will be installed when creating a development build
+    // For now, Sentry is disabled to prevent bundling errors in Expo Go
 
     // Setup notification handlers (gracefully handles Expo Go limitations)
     const cleanup = notificationService.setupListeners(

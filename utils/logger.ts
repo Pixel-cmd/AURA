@@ -37,25 +37,12 @@ class Logger {
   
   /**
    * Initialize Sentry integration
+   * Note: Sentry is not installed for Expo Go compatibility
+   * Install it when creating a development build: npm install @sentry/react-native
    */
   initSentry() {
-    try {
-      // Only try to load Sentry if not in Expo Go
-      // Check Constants first to avoid any Sentry code in Expo Go
-      const Constants = require('expo-constants');
-      const isExpoGo = !Constants?.executionEnvironment || Constants.executionEnvironment === 'storeClient';
-      
-      if (isExpoGo) {
-        return false; // Never load Sentry in Expo Go
-      }
-      
-      // Try to load Sentry directly (not through utils/sentry.ts)
-      this.Sentry = require('@sentry/react-native');
-      return true;
-    } catch (e) {
-      // Sentry not available - this is fine
-      return false;
-    }
+    // Sentry is not installed - install it when creating dev build
+    return false;
   }
 
   private log(level: LogLevel, message: string, context?: Record<string, any>, error?: Error) {
