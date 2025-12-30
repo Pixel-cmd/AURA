@@ -1,19 +1,51 @@
+// Initialize Sentry first (before other imports)
+import * as Sentry from '@sentry/react-native';
+
+if (process.env.EXPO_PUBLIC_SENTRY_DSN) {
+  Sentry.init({
+    dsn: process.env.EXPO_PUBLIC_SENTRY_DSN,
+    enableInExpoDevelopment: false, // Disable in Expo Go
+    debug: __DEV__, // Enable debug mode in development
+    environment: __DEV__ ? 'development' : 'production',
+    tracesSampleRate: __DEV__ ? 1.0 : 0.1, // 100% in dev, 10% in production
+    beforeSend(event, hint) {
+      // Filter out known non-critical errors
+      if (event.exception) {
+        const error = hint.originalException;
+        if (error && error.message) {
+          // Don't send Expo Go limitation warnings
+          if (error.message.includes('expo-notifications') && error.message.includes('Expo Go')) {
+            return null;
+          }
+        }
+      }
+      return event;
+    },
+  });
+}
+
 import React, { useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import AppNavigator from './navigation/AppNavigator';
 import { ErrorBoundary } from './app/components/ErrorBoundary';
 import './utils/i18n'; // Initialize i18n
 import { notificationService } from './services/notifications/notificationService';
+import { logger } from './utils/logger';
 
 export default function App() {
   useEffect(() => {
+    // Initialize logger with Sentry
+    if (process.env.EXPO_PUBLIC_SENTRY_DSN) {
+      logger.initSentry();
+    }
+
     // Setup notification handlers (gracefully handles Expo Go limitations)
     const cleanup = notificationService.setupListeners(
       (notification) => {
-        console.log('Notification received:', notification);
+        logger.debug('Notification received', { notification });
       },
       (response) => {
-        console.log('Notification tapped:', response);
+        logger.debug('Notification tapped', { response });
         // Handle deep linking here
         const data = response.notification.request.content.data;
         if (data?.type === 'sos_alert' && data?.sosId) {
@@ -24,8 +56,13 @@ export default function App() {
     );
 
     // Request notification permissions (silently fails in Expo Go)
-    notificationService.requestPermissions().catch(() => {
-      // Silently handle - notifications have limitations in Expo Go
+    notificationService.requestPermissions().catch((error) => {
+      logger.warn('Notification permissions failed', { error: error.message });
+    });
+
+    logger.info('App initialized', { 
+      environment: __DEV__ ? 'development' : 'production',
+      sentryEnabled: !!process.env.EXPO_PUBLIC_SENTRY_DSN,
     });
 
     return cleanup;

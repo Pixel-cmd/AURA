@@ -18,10 +18,19 @@ interface LogEntry {
 class Logger {
   private isDevelopment: boolean;
   private remoteLogger?: (entry: LogEntry) => void;
+  private Sentry?: any;
 
   constructor() {
     // In production, only log errors and warnings
     this.isDevelopment = __DEV__ || process.env.NODE_ENV === 'development';
+    
+    // Try to load Sentry if available
+    try {
+      this.Sentry = require('@sentry/react-native');
+    } catch (e) {
+      // Sentry not configured yet
+      this.Sentry = null;
+    }
   }
 
   /**
@@ -29,6 +38,18 @@ class Logger {
    */
   setRemoteLogger(logger: (entry: LogEntry) => void) {
     this.remoteLogger = logger;
+  }
+  
+  /**
+   * Initialize Sentry integration
+   */
+  initSentry() {
+    try {
+      this.Sentry = require('@sentry/react-native');
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   private log(level: LogLevel, message: string, context?: Record<string, any>, error?: Error) {
@@ -48,6 +69,27 @@ class Logger {
                            console.log;
       
       consoleMethod(`[${level.toUpperCase()}] ${message}`, context || '', error || '');
+    }
+
+    // Send to Sentry (if configured)
+    if (this.Sentry && (level === 'error' || level === 'warn')) {
+      try {
+        if (level === 'error' && error) {
+          this.Sentry.captureException(error, {
+            extra: context,
+            tags: { source: 'logger' },
+          });
+        } else if (level === 'warn') {
+          this.Sentry.captureMessage(message, {
+            level: 'warning',
+            extra: context,
+            tags: { source: 'logger' },
+          });
+        }
+      } catch (e) {
+        // Don't break app if Sentry fails
+        console.error('Failed to send to Sentry:', e);
+      }
     }
 
     // Remote logging (always send errors and warnings)
