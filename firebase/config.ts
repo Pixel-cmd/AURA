@@ -1,7 +1,8 @@
 import { initializeApp, getApps, FirebaseApp } from 'firebase/app';
-import { getAuth, Auth } from 'firebase/auth';
+import { initializeAuth, getAuth, Auth } from 'firebase/auth';
 import { getFirestore, Firestore } from 'firebase/firestore';
 import { getFunctions, Functions } from 'firebase/functions';
+import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 
 // Firebase configuration
 // TODO: Replace with your actual Firebase config
@@ -35,10 +36,33 @@ if (isFirebaseConfigured) {
       app = getApps()[0];
     }
 
-    // Initialize Auth - Firebase v12 automatically uses AsyncStorage in React Native
-    // getAuth() automatically handles persistence in React Native environments
-    // No need to explicitly configure persistence - Firebase handles it internally
-    auth = getAuth(app);
+    // Initialize Auth with AsyncStorage persistence for React Native
+    // Try to use getReactNativePersistence if available (may exist at runtime)
+    try {
+      // Try to get getReactNativePersistence from firebase/auth
+      // It might exist at runtime even if not in TypeScript definitions
+      const authModule = require('firebase/auth');
+      const getReactNativePersistence = authModule.getReactNativePersistence;
+      
+      if (getReactNativePersistence) {
+        // Use getReactNativePersistence if available
+        auth = initializeAuth(app, {
+          // @ts-ignore - Function exists at runtime
+          persistence: getReactNativePersistence(ReactNativeAsyncStorage),
+        });
+      } else {
+        // Fallback to getAuth (should still work with persistence in RN)
+        auth = getAuth(app);
+      }
+    } catch (error: any) {
+      // If initializeAuth fails, fallback to getAuth
+      if (error.code === 'auth/already-initialized') {
+        auth = getAuth(app);
+      } else {
+        // Try getAuth as fallback
+        auth = getAuth(app);
+      }
+    }
 
     db = getFirestore(app);
     functions = getFunctions(app);
