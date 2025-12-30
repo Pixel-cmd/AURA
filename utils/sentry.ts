@@ -3,6 +3,8 @@
  * Completely excluded from Expo Go to avoid bundling issues
  */
 
+import Constants from 'expo-constants';
+
 let Sentry: any = null;
 let isInitialized = false;
 
