@@ -7,25 +7,41 @@ import './utils/i18n'; // Initialize i18n
 import { notificationService } from './services/notifications/notificationService';
 import { logger } from './utils/logger';
 
-// Only load Sentry initialization if not in Expo Go
-// This prevents bundling Sentry in Expo Go (which causes the promise/setimmediate/done error)
+// Check if we're in Expo Go BEFORE any Sentry-related code
 const isExpoGo = !Constants?.executionEnvironment || Constants.executionEnvironment === 'storeClient';
 
 export default function App() {
   useEffect(() => {
-    // Initialize Sentry (only in development builds, not Expo Go)
-    // Use dynamic require to prevent bundling in Expo Go
-    if (!isExpoGo) {
+    // Initialize Sentry ONLY in development builds (NOT in Expo Go)
+    // We check Expo Go first and never touch Sentry code if we are
+    if (!isExpoGo && process.env.EXPO_PUBLIC_SENTRY_DSN) {
       try {
-        const { initSentry } = require('./utils/sentry');
-        initSentry();
+        // Inline Sentry initialization - never import utils/sentry.ts
+        // This prevents Metro from analyzing any Sentry code
+        const Sentry = require('@sentry/react-native');
+        Sentry.init({
+          dsn: process.env.EXPO_PUBLIC_SENTRY_DSN,
+          debug: __DEV__,
+          environment: __DEV__ ? 'development' : 'production',
+          tracesSampleRate: __DEV__ ? 1.0 : 0.1,
+          beforeSend(event: any, hint: any) {
+            if (event.exception) {
+              const error = hint.originalException;
+              if (error && typeof error === 'object' && 'message' in error) {
+                const errorMessage = String(error.message);
+                if (errorMessage.includes('expo-notifications') && errorMessage.includes('Expo Go')) {
+                  return null;
+                }
+              }
+            }
+            return event;
+          },
+        });
         // Initialize logger with Sentry
-        if (process.env.EXPO_PUBLIC_SENTRY_DSN) {
-          logger.initSentry();
-        }
+        logger.initSentry();
       } catch (e) {
-        // Sentry not available (this is fine in Expo Go)
-        console.log('Sentry initialization skipped (not available in Expo Go)');
+        // Sentry not available - this is fine
+        console.log('Sentry initialization skipped');
       }
     }
 

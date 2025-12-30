@@ -40,14 +40,20 @@ class Logger {
    */
   initSentry() {
     try {
-      // Import from our Sentry utility (which handles Expo Go check)
-      const { getSentry, isSentryAvailable } = require('./sentry');
-      if (isSentryAvailable()) {
-        this.Sentry = getSentry();
-        return true;
+      // Only try to load Sentry if not in Expo Go
+      // Check Constants first to avoid any Sentry code in Expo Go
+      const Constants = require('expo-constants');
+      const isExpoGo = !Constants?.executionEnvironment || Constants.executionEnvironment === 'storeClient';
+      
+      if (isExpoGo) {
+        return false; // Never load Sentry in Expo Go
       }
-      return false;
+      
+      // Try to load Sentry directly (not through utils/sentry.ts)
+      this.Sentry = require('@sentry/react-native');
+      return true;
     } catch (e) {
+      // Sentry not available - this is fine
       return false;
     }
   }
