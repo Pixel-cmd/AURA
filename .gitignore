@@ -49,6 +49,8 @@ ios/Podfile.lock
 ios/build/
 *.xcworkspace
 !ios/AURA.xcworkspace
+# Firebase config files (sensitive)
+ios/AURA/GoogleService-Info.plist
 
 # Android
 android/app/build/
