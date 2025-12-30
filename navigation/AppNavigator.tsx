@@ -49,6 +49,7 @@ export default function AppNavigator() {
       setUser(null);
       setLoading(false);
       setInitializing(false);
+      setOnboardingComplete(false); // No user = no onboarding needed
       return;
     }
 
@@ -56,12 +57,18 @@ export default function AppNavigator() {
       setUser(user);
       setLoading(false);
       
-      // Check onboarding status if user is authenticated
+      // Check onboarding status ONLY if user is authenticated
       if (user) {
-        const complete = await isOnboardingComplete();
-        setOnboardingComplete(complete);
+        try {
+          const complete = await isOnboardingComplete();
+          setOnboardingComplete(complete);
+        } catch (error) {
+          console.error('Error checking onboarding status:', error);
+          setOnboardingComplete(false); // Default to false on error
+        }
       } else {
-        setOnboardingComplete(null);
+        // No user = show login immediately (don't wait for onboarding check)
+        setOnboardingComplete(false);
       }
       
       setInitializing(false);
@@ -69,7 +76,7 @@ export default function AppNavigator() {
       console.warn("Auth state error:", error);
       setUser(null);
       setLoading(false);
-      setOnboardingComplete(null);
+      setOnboardingComplete(false); // No user = show login
       setInitializing(false);
     });
 
@@ -78,22 +85,32 @@ export default function AppNavigator() {
 
   // Determine initial route based on auth and onboarding status
   const getInitialRoute = () => {
-    if (initializing || isLoading || onboardingComplete === null) {
-      return null; // Still loading
+    // If still initializing auth, show loading
+    if (initializing || isLoading) {
+      return null;
     }
     
+    // No user = show login immediately
     if (!user) {
       return 'Login';
     }
     
-    if (!onboardingComplete) {
+    // User exists but onboarding not complete = show onboarding
+    if (onboardingComplete === false) {
       return 'Intro';
     }
     
-    return 'Home';
+    // User exists and onboarding complete = show home
+    if (onboardingComplete === true) {
+      return 'Home';
+    }
+    
+    // Fallback (shouldn't happen)
+    return 'Login';
   };
 
-  if (initializing || isLoading || onboardingComplete === null) {
+  // Show loading only while checking auth state
+  if (initializing || isLoading) {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color={Colors.primary} />
