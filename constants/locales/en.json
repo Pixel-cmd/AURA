@@ -113,12 +113,14 @@
     "login": {
       "title": "Welcome to AURA",
       "subtitle": "Sign in to continue",
-      "button": "Sign In"
+      "button": "Sign In",
+      "link": "Sign In"
     },
     "signup": {
       "title": "Join AURA",
       "subtitle": "Create an account to get started",
-      "button": "Sign Up"
+      "button": "Sign Up",
+      "link": "Sign Up"
     },
     "email": "Email",
     "password": "Password",
@@ -129,13 +131,7 @@
     "phone": "Continue with Phone",
     "or": "OR",
     "noAccount": "Don't have an account?",
-    "haveAccount": "Already have an account?",
-    "signup": {
-      "link": "Sign Up"
-    },
-    "login": {
-      "link": "Sign In"
-    }
+    "haveAccount": "Already have an account?"
   },
   "errors": {
     "locationDenied": "Location permission is required for AURA to work.",

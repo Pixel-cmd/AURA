@@ -113,12 +113,14 @@
     "login": {
       "title": "Welkom bij AURA",
       "subtitle": "Log in om door te gaan",
-      "button": "Inloggen"
+      "button": "Inloggen",
+      "link": "Inloggen"
     },
     "signup": {
       "title": "Word lid van AURA",
       "subtitle": "Maak een account aan om te beginnen",
-      "button": "Registreren"
+      "button": "Registreren",
+      "link": "Registreren"
     },
     "email": "E-mail",
     "password": "Wachtwoord",
@@ -129,13 +131,7 @@
     "phone": "Doorgaan met Telefoon",
     "or": "OF",
     "noAccount": "Nog geen account?",
-    "haveAccount": "Heb je al een account?",
-    "signup": {
-      "link": "Registreren"
-    },
-    "login": {
-      "link": "Inloggen"
-    }
+    "haveAccount": "Heb je al een account?"
   },
   "errors": {
     "locationDenied": "Locatietoegang is vereist om AURA te laten werken.",
