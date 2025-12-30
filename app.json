@@ -32,11 +32,12 @@
       "permissions": [
         "ACCESS_FINE_LOCATION",
         "ACCESS_COARSE_LOCATION",
-        "ACCESS_BACKGROUND_LOCATION"
+        "ACCESS_BACKGROUND_LOCATION",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION"
       ]
     },
-    "web": {
-    },
+    "web": {},
     "plugins": [
       [
         "expo-location",
@@ -58,9 +59,9 @@
     ],
     "extra": {
       "eas": {
-        "projectId": "your-eas-project-id"
+        "projectId": "b35f2641-2680-477e-b874-6ff27175929b"
       }
-    }
+    },
+    "owner": "quintenharsveld"
   }
 }
-
