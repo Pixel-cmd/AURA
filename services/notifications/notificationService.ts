@@ -1,4 +1,3 @@
-import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
 import Constants from 'expo-constants';
 import { doc, updateDoc } from 'firebase/firestore';
@@ -7,15 +6,28 @@ import { db } from '../../firebase/config';
 // Check if running in Expo Go (notifications have limitations)
 const isExpoGo = Constants.executionEnvironment === 'storeClient';
 
-// Configure notification handler (only if not in Expo Go)
+// Lazy load expo-notifications to avoid warnings in Expo Go
+let Notifications: typeof import('expo-notifications') | null = null;
+
+// Only import expo-notifications if not in Expo Go
 if (!isExpoGo) {
-  Notifications.setNotificationHandler({
-    handleNotification: async () => ({
-      shouldShowAlert: true,
-      shouldPlaySound: true,
-      shouldSetBadge: true,
-    }),
-  });
+  try {
+    Notifications = require('expo-notifications');
+    // Configure notification handler
+    if (Notifications) {
+      Notifications.setNotificationHandler({
+        handleNotification: async () => ({
+          shouldShowAlert: true,
+          shouldPlaySound: true,
+          shouldSetBadge: true,
+          shouldShowBanner: true,
+          shouldShowList: true,
+        }),
+      });
+    }
+  } catch (error) {
+    // Silently fail - notifications not available
+  }
 }
 
 class NotificationService {
@@ -24,8 +36,7 @@ class NotificationService {
    */
   async requestPermissions(): Promise<boolean> {
     // In Expo Go, notifications have limitations - skip silently
-    if (isExpoGo) {
-      console.log('📱 Running in Expo Go - notifications have limitations. Use development build for full support.');
+    if (isExpoGo || !Notifications) {
       return false;
     }
 
@@ -59,6 +70,10 @@ class NotificationService {
    * Check if notification permissions are granted
    */
   async hasPermissions(): Promise<boolean> {
+    if (isExpoGo || !Notifications) {
+      return false;
+    }
+
     try {
       const { status } = await Notifications.getPermissionsAsync();
       return status === 'granted';
@@ -72,8 +87,7 @@ class NotificationService {
    */
   async getFCMToken(): Promise<string | null> {
     // In Expo Go, FCM tokens are not fully supported
-    if (isExpoGo) {
-      console.log('📱 FCM tokens not available in Expo Go. Use development build for push notifications.');
+    if (isExpoGo || !Notifications) {
       return null;
     }
 
@@ -108,12 +122,11 @@ class NotificationService {
    * Setup notification listeners
    */
   setupListeners(
-    onNotificationReceived: (notification: Notifications.Notification) => void,
-    onNotificationTapped: (response: Notifications.NotificationResponse) => void
+    onNotificationReceived: (notification: any) => void,
+    onNotificationTapped: (response: any) => void
   ): () => void {
     // In Expo Go, notification listeners have limitations
-    if (isExpoGo) {
-      console.log('📱 Notification listeners limited in Expo Go. Use development build for full support.');
+    if (isExpoGo || !Notifications) {
       // Return empty cleanup function
       return () => {};
     }
@@ -143,6 +156,10 @@ class NotificationService {
     body: string,
     data?: any
   ): Promise<string> {
+    if (isExpoGo || !Notifications) {
+      throw new Error('Notifications not available in Expo Go');
+    }
+
     try {
       const identifier = await Notifications.scheduleNotificationAsync({
         content: {
@@ -165,6 +182,10 @@ class NotificationService {
    * Cancel notification
    */
   async cancelNotification(identifier: string): Promise<void> {
+    if (isExpoGo || !Notifications) {
+      return;
+    }
+
     try {
       await Notifications.cancelScheduledNotificationAsync(identifier);
     } catch (error) {
@@ -176,6 +197,10 @@ class NotificationService {
    * Cancel all notifications
    */
   async cancelAllNotifications(): Promise<void> {
+    if (isExpoGo || !Notifications) {
+      return;
+    }
+
     try {
       await Notifications.cancelAllScheduledNotificationsAsync();
     } catch (error) {
