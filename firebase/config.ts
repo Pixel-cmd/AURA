@@ -16,20 +16,36 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-let app: FirebaseApp;
-let auth: Auth;
-let db: Firestore;
-let functions: Functions;
+let app: FirebaseApp | null = null;
+let auth: Auth | null = null;
+let db: Firestore | null = null;
+let functions: Functions | null = null;
 
-if (getApps().length === 0) {
-  app = initializeApp(firebaseConfig);
+// Check if Firebase config is valid (not placeholder values)
+const isFirebaseConfigured = 
+  firebaseConfig.apiKey !== "your-api-key" &&
+  firebaseConfig.projectId !== "your-project-id" &&
+  firebaseConfig.apiKey?.startsWith("AIza");
+
+if (isFirebaseConfigured) {
+  try {
+    if (getApps().length === 0) {
+      app = initializeApp(firebaseConfig);
+    } else {
+      app = getApps()[0];
+    }
+
+    auth = getAuth(app);
+    db = getFirestore(app);
+    functions = getFunctions(app);
+  } catch (error) {
+    console.warn("Firebase initialization error:", error);
+    console.warn("Please configure Firebase in .env file. See firebase/FIREBASE_SETUP.md");
+  }
 } else {
-  app = getApps()[0];
+  console.warn("⚠️ Firebase not configured. Please set up Firebase config in .env file.");
+  console.warn("See firebase/FIREBASE_SETUP.md for instructions.");
 }
-
-auth = getAuth(app);
-db = getFirestore(app);
-functions = getFunctions(app);
 
 export { app, auth, db, functions };
 export default app;

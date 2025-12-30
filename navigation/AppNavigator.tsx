@@ -39,8 +39,22 @@ export default function AppNavigator() {
   const [initializing, setInitializing] = useState(true);
 
   useEffect(() => {
+    // Only set up auth listener if Firebase is configured
+    if (!auth) {
+      console.warn("Firebase auth not available - skipping auth state listener");
+      setUser(null);
+      setLoading(false);
+      setInitializing(false);
+      return;
+    }
+
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
+      setLoading(false);
+      setInitializing(false);
+    }, (error) => {
+      console.warn("Auth state error:", error);
+      setUser(null);
       setLoading(false);
       setInitializing(false);
     });
