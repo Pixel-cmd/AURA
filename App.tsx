@@ -1,84 +1,39 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, SafeAreaView } from 'react-native';
-import { Colors } from './constants/Colors';
+import AppNavigator from './navigation/AppNavigator';
+import { ErrorBoundary } from './app/components/ErrorBoundary';
+import './utils/i18n'; // Initialize i18n
+import { notificationService } from './services/notifications/notificationService';
 
 export default function App() {
+  useEffect(() => {
+    // Setup notification handlers
+    const cleanup = notificationService.setupListeners(
+      (notification) => {
+        console.log('Notification received:', notification);
+      },
+      (response) => {
+        console.log('Notification tapped:', response);
+        // Handle deep linking here
+        const data = response.notification.request.content.data;
+        if (data?.type === 'sos_alert' && data?.sosId) {
+          // Navigate to helper alert screen
+          // This will be handled by navigation
+        }
+      }
+    );
+
+    // Request notification permissions
+    notificationService.requestPermissions();
+
+    return cleanup;
+  }, []);
+
   return (
-    <SafeAreaView style={styles.container}>
+    <ErrorBoundary>
       <StatusBar style="light" />
-      <View style={styles.content}>
-        <View style={styles.iconContainer}>
-          <View style={styles.iconCircle}>
-            <Text style={styles.iconText}>🛡️</Text>
-          </View>
-        </View>
-        <Text style={styles.title}>AURA</Text>
-        <Text style={styles.subtitle}>Safety App</Text>
-        <Text style={styles.description}>
-          You're never alone.
-        </Text>
-        <Text style={styles.description}>
-          AURA connects you to people nearby when you need it most.
-        </Text>
-      </View>
-    </SafeAreaView>
+      <AppNavigator />
+    </ErrorBoundary>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.background,
-  },
-  content: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 20,
-  },
-  iconContainer: {
-    marginBottom: 30,
-  },
-  iconCircle: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    backgroundColor: Colors.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: Colors.primary,
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 8,
-  },
-  iconText: {
-    fontSize: 60,
-  },
-  title: {
-    fontSize: 48,
-    fontWeight: 'bold',
-    color: Colors.primary,
-    marginBottom: 10,
-    textAlign: 'center',
-  },
-  subtitle: {
-    fontSize: 24,
-    color: Colors.textSecondary,
-    marginBottom: 30,
-    textAlign: 'center',
-  },
-  description: {
-    fontSize: 18,
-    color: Colors.text,
-    textAlign: 'center',
-    marginBottom: 15,
-    lineHeight: 26,
-    paddingHorizontal: 20,
-  },
-});
 

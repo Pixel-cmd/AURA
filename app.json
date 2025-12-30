@@ -19,7 +19,8 @@
         "NSLocationWhenInUseUsageDescription": "AURA needs your location to connect you with nearby helpers when you need assistance.",
         "NSLocationAlwaysAndWhenInUseUsageDescription": "AURA needs your location to connect you with nearby helpers, even when the app is in the background.",
         "UIBackgroundModes": [
-          "location"
+          "location",
+          "remote-notification"
         ]
       }
     },
@@ -42,8 +43,24 @@
         {
           "locationAlwaysAndWhenInUsePermission": "Allow AURA to use your location to connect you with nearby helpers."
         }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/icon.png",
+          "color": "#6B46C1",
+          "sounds": []
+        }
+      ],
+      [
+        "expo-apple-authentication"
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "your-eas-project-id"
+      }
+    }
   }
 }
 

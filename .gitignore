@@ -35,3 +35,21 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 
+# Firebase
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+.firebase/
+.firebaserc
+firebase.json
+
+# iOS
+ios/Pods/
+ios/Podfile.lock
+ios/build/
+*.xcworkspace
+!ios/AURA.xcworkspace
+
+# Android
+android/app/build/
+android/.gradle/

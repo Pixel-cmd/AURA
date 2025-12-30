@@ -2,7 +2,8 @@
 
 export interface User {
   id: string;
-  name: string;
+  firstName: string;
+  lastName?: string;
   email?: string;
   phone?: string;
   presenceScore: number;
@@ -15,12 +16,14 @@ export interface Location {
   latitude: number;
   longitude: number;
   timestamp: number;
+  geohash?: string;
 }
 
 export interface Helper {
   user: User;
   distance: number; // in meters
   estimatedArrival?: number; // in seconds
+  status?: 'notified' | 'responding' | 'on_way' | 'arrived';
 }
 
 export interface PresenceRequest {
@@ -39,4 +42,7 @@ export interface Badge {
   icon: string;
   earnedAt: number;
 }
+
+// Re-export Firebase types
+export * from './firebase';
 

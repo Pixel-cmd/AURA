@@ -1,0 +1,120 @@
+{
+  "common": {
+    "ok": "OK",
+    "cancel": "Annuleren",
+    "next": "Volgende",
+    "skip": "Overslaan",
+    "back": "Terug",
+    "save": "Opslaan",
+    "delete": "Verwijderen",
+    "edit": "Bewerken",
+    "close": "Sluiten"
+  },
+  "onboarding": {
+    "intro": {
+      "title": "Je bent nooit alleen",
+      "subtitle": "AURA verbindt je met mensen in de buurt wanneer je het het meest nodig hebt."
+    },
+    "howItWorks": {
+      "title": "Eenvoud is veiligheid",
+      "subtitle": "Zo houdt AURA je verbonden.",
+      "step1": {
+        "title": "Tik eenmaal → Activeer aanwezigheid",
+        "description": "Geef je behoefte aan gezelschap aan zonder alarm."
+      },
+      "step2": {
+        "title": "Mensen in de buurt worden gewaarschuwd",
+        "description": "Vertrouwde gemeenschapsleden in jouw omgeving worden gealarmeerd."
+      },
+      "step3": {
+        "title": "Voel je veilig, blijf in controle",
+        "description": "Jij beslist wanneer je de verbinding beëindigt."
+      }
+    },
+    "privacy": {
+      "title": "Geen tracking. Geen ruis.",
+      "subtitle": "Jij blijft in controle."
+    },
+    "permissions": {
+      "title": "Help ons je te vinden",
+      "subtitle": "Om ervoor te zorgen dat AURA werkt wanneer je het het meest nodig hebt, hebben we toegang tot een paar dingen nodig.",
+      "location": {
+        "title": "Locatietoegang",
+        "description": "Vereist om je positie te delen met helpers in de buurt tijdens een noodgeval."
+      },
+      "notifications": {
+        "title": "Kritieke waarschuwingen",
+        "description": "Krijg direct een melding wanneer iemand je hulpverzoek accepteert."
+      }
+    }
+  },
+  "home": {
+    "title": "AURA",
+    "sosButton": "Tik om aanwezigheid te activeren",
+    "sosSubtitle": "Zend je veiligheidsstatus uit",
+    "helperMode": "Helper Modus",
+    "callEmergency": "Bel nooddienst"
+  },
+  "sos": {
+    "active": {
+      "title": "Helpers gealarmeerd",
+      "subtitle": "{{count}} mensen in de buurt",
+      "onWay": "{{count}} onderweg",
+      "callEmergency": "Bel {{number}}",
+      "imSafe": "Ik ben veilig"
+    },
+    "helper": {
+      "alert": {
+        "title": "Iemand in de buurt heeft hulp nodig",
+        "distance": "{{distance}}m verderop",
+        "imGoing": "Ik ga kijken",
+        "iCant": "Ik kan niet"
+      },
+      "onWay": {
+        "title": "Signaal volgen...",
+        "distance": "~{{distance}}m",
+        "direction": "Persoon in nood is naar je {{direction}}",
+        "imNearby": "Ik ben in de buurt",
+        "iCant": "Ik kan nu niet",
+        "privacy": "Je locatie blijft privé totdat je aanwezigheid bevestigt."
+      }
+    },
+    "closure": {
+      "title": "Je bent veilig.",
+      "subtitle": "Bedankt dat je deel uitmaakt van de gemeenschap.",
+      "points": "AANWEZIGHEIDSPUNTEN",
+      "pointsAwarded": "+{{points}} punten",
+      "backToHome": "Terug naar Home"
+    }
+  },
+  "profile": {
+    "title": "Jouw Aura",
+    "activeStreak": "{{days}} Dagen Actieve Reeks",
+    "presenceScore": "AANWEZIGHEIDSSCORE",
+    "trustLevel": "Hoog Vertrouwensniveau",
+    "description": "Je consistente hulp en geverifieerde identiteit maken je een pijler van de gemeenschap.",
+    "reputation": "Reputatie",
+    "viewAll": "Alles bekijken",
+    "editProfile": "Profiel bewerken"
+  },
+  "settings": {
+    "title": "Instellingen",
+    "helperMode": "Helper Modus",
+    "helperModeDescription": "Krijg meldingen wanneer mensen in de buurt hulp nodig hebben",
+    "emergencyNumber": "Noodnummer",
+    "autoDetected": "Automatisch gedetecteerd",
+    "override": "Overschrijven",
+    "privacy": "Privacy & Veiligheid",
+    "notifications": "Meldingen",
+    "language": "Taal",
+    "deleteAccount": "Account verwijderen"
+  },
+  "errors": {
+    "locationDenied": "Locatietoegang is vereist om AURA te laten werken.",
+    "notificationDenied": "Meldingen zijn vereist om hulpwaarschuwingen te ontvangen.",
+    "networkError": "Netwerkfout. Controleer je verbinding.",
+    "sosLimitReached": "Je hebt het maximum aantal SOS-verzoeken bereikt. Wacht even voordat je er nog een verzendt.",
+    "generic": "Er is iets misgegaan. Probeer het opnieuw."
+  }
+}
+

@@ -1,0 +1,120 @@
+{
+  "common": {
+    "ok": "OK",
+    "cancel": "Cancel",
+    "next": "Next",
+    "skip": "Skip",
+    "back": "Back",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close"
+  },
+  "onboarding": {
+    "intro": {
+      "title": "You're never alone",
+      "subtitle": "AURA connects you to people nearby when you need it most."
+    },
+    "howItWorks": {
+      "title": "Simplicity is safety",
+      "subtitle": "Here's how AURA keeps you connected.",
+      "step1": {
+        "title": "Tap once → Activate presence",
+        "description": "Signal your need for company without alarm."
+      },
+      "step2": {
+        "title": "Nearby people are notified",
+        "description": "Trusted community members in your vicinity are alerted."
+      },
+      "step3": {
+        "title": "Feel safe, stay in control",
+        "description": "You decide when to end the connection."
+      }
+    },
+    "privacy": {
+      "title": "No tracking. No noise.",
+      "subtitle": "You stay in control."
+    },
+    "permissions": {
+      "title": "Help us find you",
+      "subtitle": "To ensure AURA works when you need it most, we need access to a few things.",
+      "location": {
+        "title": "Location Access",
+        "description": "Required to share your position with nearby helpers during an emergency."
+      },
+      "notifications": {
+        "title": "Critical Alerts",
+        "description": "Get notified instantly when someone accepts your request for help."
+      }
+    }
+  },
+  "home": {
+    "title": "AURA",
+    "sosButton": "Tap to activate presence",
+    "sosSubtitle": "Broadcast your safety status",
+    "helperMode": "Helper Mode",
+    "callEmergency": "Call emergency"
+  },
+  "sos": {
+    "active": {
+      "title": "Helpers alerted",
+      "subtitle": "{{count}} people nearby",
+      "onWay": "{{count}} on the way",
+      "callEmergency": "Call {{number}}",
+      "imSafe": "I'm safe"
+    },
+    "helper": {
+      "alert": {
+        "title": "Someone nearby needs help",
+        "distance": "{{distance}}m away",
+        "imGoing": "I'm going",
+        "iCant": "I can't right now"
+      },
+      "onWay": {
+        "title": "Following signal...",
+        "distance": "~{{distance}}m",
+        "direction": "Person in need is to your {{direction}}",
+        "imNearby": "I'm nearby",
+        "iCant": "I can't right now",
+        "privacy": "Your location is kept private until you confirm presence."
+      }
+    },
+    "closure": {
+      "title": "You're safe.",
+      "subtitle": "Thank you for being part of the community.",
+      "points": "PRESENCE POINTS",
+      "pointsAwarded": "+{{points}} pts",
+      "backToHome": "Back to Home"
+    }
+  },
+  "profile": {
+    "title": "Your Aura",
+    "activeStreak": "{{days}} Days Active Streak",
+    "presenceScore": "PRESENCE SCORE",
+    "trustLevel": "High Trust Level",
+    "description": "Your consistent help and verified identity make you a pillar of the community.",
+    "reputation": "Reputation",
+    "viewAll": "View All",
+    "editProfile": "Edit Profile"
+  },
+  "settings": {
+    "title": "Settings",
+    "helperMode": "Helper Mode",
+    "helperModeDescription": "Get alerts when people nearby need help",
+    "emergencyNumber": "Emergency Number",
+    "autoDetected": "Auto-detected",
+    "override": "Override",
+    "privacy": "Privacy & Safety",
+    "notifications": "Notifications",
+    "language": "Language",
+    "deleteAccount": "Delete Account"
+  },
+  "errors": {
+    "locationDenied": "Location permission is required for AURA to work.",
+    "notificationDenied": "Notifications are required to receive help alerts.",
+    "networkError": "Network error. Please check your connection.",
+    "sosLimitReached": "You've reached the maximum number of SOS requests. Please wait before sending another.",
+    "generic": "Something went wrong. Please try again."
+  }
+}
+
