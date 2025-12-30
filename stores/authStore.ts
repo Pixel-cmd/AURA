@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { User as FirebaseUser } from 'firebase/auth';
 import { FirestoreUser } from '../types/firebase';
 import { authService } from '../services/auth/authService';
+import { resetOnboarding } from '../utils/onboardingStorage';
 
 interface AuthState {
   user: FirebaseUser | null;
@@ -36,6 +37,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   signOut: async () => {
     try {
       await authService.signOut();
+      await resetOnboarding(); // Reset onboarding on sign out
       set({ user: null, profile: null, isAuthenticated: false });
     } catch (error) {
       console.error('Error signing out:', error);

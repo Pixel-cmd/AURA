@@ -109,6 +109,34 @@
     "language": "Language",
     "deleteAccount": "Delete Account"
   },
+  "auth": {
+    "login": {
+      "title": "Welcome to AURA",
+      "subtitle": "Sign in to continue",
+      "button": "Sign In"
+    },
+    "signup": {
+      "title": "Join AURA",
+      "subtitle": "Create an account to get started",
+      "button": "Sign Up"
+    },
+    "email": "Email",
+    "password": "Password",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "apple": "Continue with Apple",
+    "google": "Continue with Google",
+    "phone": "Continue with Phone",
+    "or": "OR",
+    "noAccount": "Don't have an account?",
+    "haveAccount": "Already have an account?",
+    "signup": {
+      "link": "Sign Up"
+    },
+    "login": {
+      "link": "Sign In"
+    }
+  },
   "errors": {
     "locationDenied": "Location permission is required for AURA to work.",
     "notificationDenied": "Notifications are required to receive help alerts.",

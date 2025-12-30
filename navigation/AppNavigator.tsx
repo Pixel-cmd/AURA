@@ -6,8 +6,10 @@ import { auth } from '../firebase/config';
 import { useAuthStore } from '../stores/authStore';
 import { View, ActivityIndicator, StyleSheet } from 'react-native';
 import { Colors } from '../constants/Colors';
+import { isOnboardingComplete } from '../utils/onboardingStorage';
 
 // Screens
+import LoginScreen from '../app/auth/LoginScreen';
 import IntroScreen from '../app/onboarding/IntroScreen';
 import HowItWorksScreen from '../app/onboarding/HowItWorksScreen';
 import PrivacyScreen from '../app/onboarding/PrivacyScreen';
@@ -20,6 +22,7 @@ import ClosureScreen from '../app/home/ClosureScreen';
 import ProfileScreen from '../app/profile/ProfileScreen';
 
 export type RootStackParamList = {
+  Login: undefined;
   Intro: undefined;
   HowItWorks: undefined;
   Privacy: undefined;
@@ -35,8 +38,9 @@ export type RootStackParamList = {
 const Stack = createStackNavigator<RootStackParamList>();
 
 export default function AppNavigator() {
-  const { setUser, setLoading, isLoading } = useAuthStore();
+  const { setUser, setLoading, isLoading, user } = useAuthStore();
   const [initializing, setInitializing] = useState(true);
+  const [onboardingComplete, setOnboardingComplete] = useState<boolean | null>(null);
 
   useEffect(() => {
     // Only set up auth listener if Firebase is configured
@@ -48,21 +52,57 @@ export default function AppNavigator() {
       return;
     }
 
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setUser(user);
       setLoading(false);
+      
+      // Check onboarding status if user is authenticated
+      if (user) {
+        const complete = await isOnboardingComplete();
+        setOnboardingComplete(complete);
+      } else {
+        setOnboardingComplete(null);
+      }
+      
       setInitializing(false);
     }, (error) => {
       console.warn("Auth state error:", error);
       setUser(null);
       setLoading(false);
+      setOnboardingComplete(null);
       setInitializing(false);
     });
 
     return unsubscribe;
   }, [setUser, setLoading]);
 
-  if (initializing || isLoading) {
+  // Determine initial route based on auth and onboarding status
+  const getInitialRoute = () => {
+    if (initializing || isLoading || onboardingComplete === null) {
+      return null; // Still loading
+    }
+    
+    if (!user) {
+      return 'Login';
+    }
+    
+    if (!onboardingComplete) {
+      return 'Intro';
+    }
+    
+    return 'Home';
+  };
+
+  if (initializing || isLoading || onboardingComplete === null) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={Colors.primary} />
+      </View>
+    );
+  }
+
+  const initialRoute = getInitialRoute();
+  if (!initialRoute) {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color={Colors.primary} />
@@ -77,8 +117,11 @@ export default function AppNavigator() {
           headerShown: false,
           cardStyle: { backgroundColor: '#FFFFFF' },
         }}
-        initialRouteName="Intro"
+        initialRouteName={initialRoute}
       >
+        {/* Authentication */}
+        <Stack.Screen name="Login" component={LoginScreen} />
+
         {/* Onboarding Flow */}
         <Stack.Screen name="Intro" component={IntroScreen} />
         <Stack.Screen name="HowItWorks" component={HowItWorksScreen} />

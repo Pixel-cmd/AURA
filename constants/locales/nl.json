@@ -109,6 +109,34 @@
     "language": "Taal",
     "deleteAccount": "Account verwijderen"
   },
+  "auth": {
+    "login": {
+      "title": "Welkom bij AURA",
+      "subtitle": "Log in om door te gaan",
+      "button": "Inloggen"
+    },
+    "signup": {
+      "title": "Word lid van AURA",
+      "subtitle": "Maak een account aan om te beginnen",
+      "button": "Registreren"
+    },
+    "email": "E-mail",
+    "password": "Wachtwoord",
+    "firstName": "Voornaam",
+    "lastName": "Achternaam",
+    "apple": "Doorgaan met Apple",
+    "google": "Doorgaan met Google",
+    "phone": "Doorgaan met Telefoon",
+    "or": "OF",
+    "noAccount": "Nog geen account?",
+    "haveAccount": "Heb je al een account?",
+    "signup": {
+      "link": "Registreren"
+    },
+    "login": {
+      "link": "Inloggen"
+    }
+  },
   "errors": {
     "locationDenied": "Locatietoegang is vereist om AURA te laten werken.",
     "notificationDenied": "Meldingen zijn vereist om hulpwaarschuwingen te ontvangen.",

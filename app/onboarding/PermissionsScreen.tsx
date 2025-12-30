@@ -15,6 +15,7 @@ import { Colors } from '../../constants/Colors';
 import { useTranslation } from 'react-i18next';
 import { locationService } from '../../services/location/locationService';
 import { notificationService } from '../../services/notifications/notificationService';
+import { setOnboardingComplete } from '../../utils/onboardingStorage';
 
 type PermissionsScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Permissions'>;
 
@@ -67,6 +68,8 @@ export default function PermissionsScreen() {
     setNotificationsEnabled(notificationsGranted);
 
     if (locationGranted && notificationsGranted) {
+      // Mark onboarding as complete
+      await setOnboardingComplete();
       navigation.navigate('Home');
     } else {
       Alert.alert(
