@@ -24,13 +24,8 @@ class Logger {
     // In production, only log errors and warnings
     this.isDevelopment = __DEV__ || process.env.NODE_ENV === 'development';
     
-    // Try to load Sentry if available
-    try {
-      this.Sentry = require('@sentry/react-native');
-    } catch (e) {
-      // Sentry not configured yet
-      this.Sentry = null;
-    }
+    // Don't load Sentry in constructor - it will be loaded via initSentry() if needed
+    this.Sentry = null;
   }
 
   /**
@@ -45,8 +40,13 @@ class Logger {
    */
   initSentry() {
     try {
-      this.Sentry = require('@sentry/react-native');
-      return true;
+      // Import from our Sentry utility (which handles Expo Go check)
+      const { getSentry, isSentryAvailable } = require('./sentry');
+      if (isSentryAvailable()) {
+        this.Sentry = getSentry();
+        return true;
+      }
+      return false;
     } catch (e) {
       return false;
     }
