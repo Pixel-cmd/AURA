@@ -1,22 +1,34 @@
 import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
+import Constants from 'expo-constants';
 import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '../../firebase/config';
 
-// Configure notification handler
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: true,
-  }),
-});
+// Check if running in Expo Go (notifications have limitations)
+const isExpoGo = Constants.executionEnvironment === 'storeClient';
+
+// Configure notification handler (only if not in Expo Go)
+if (!isExpoGo) {
+  Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldShowAlert: true,
+      shouldPlaySound: true,
+      shouldSetBadge: true,
+    }),
+  });
+}
 
 class NotificationService {
   /**
    * Request notification permissions
    */
   async requestPermissions(): Promise<boolean> {
+    // In Expo Go, notifications have limitations - skip silently
+    if (isExpoGo) {
+      console.log('📱 Running in Expo Go - notifications have limitations. Use development build for full support.');
+      return false;
+    }
+
     try {
       const { status: existingStatus } = await Notifications.getPermissionsAsync();
       let finalStatus = existingStatus;
@@ -59,6 +71,12 @@ class NotificationService {
    * Get FCM token for push notifications
    */
   async getFCMToken(): Promise<string | null> {
+    // In Expo Go, FCM tokens are not fully supported
+    if (isExpoGo) {
+      console.log('📱 FCM tokens not available in Expo Go. Use development build for push notifications.');
+      return null;
+    }
+
     try {
       // For Expo, we use Expo's notification token
       const token = await Notifications.getExpoPushTokenAsync({
@@ -93,6 +111,13 @@ class NotificationService {
     onNotificationReceived: (notification: Notifications.Notification) => void,
     onNotificationTapped: (response: Notifications.NotificationResponse) => void
   ): () => void {
+    // In Expo Go, notification listeners have limitations
+    if (isExpoGo) {
+      console.log('📱 Notification listeners limited in Expo Go. Use development build for full support.');
+      // Return empty cleanup function
+      return () => {};
+    }
+
     // Foreground notification listener
     const receivedListener = Notifications.addNotificationReceivedListener(
       onNotificationReceived

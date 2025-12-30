@@ -7,7 +7,7 @@ import { notificationService } from './services/notifications/notificationServic
 
 export default function App() {
   useEffect(() => {
-    // Setup notification handlers
+    // Setup notification handlers (gracefully handles Expo Go limitations)
     const cleanup = notificationService.setupListeners(
       (notification) => {
         console.log('Notification received:', notification);
@@ -23,8 +23,10 @@ export default function App() {
       }
     );
 
-    // Request notification permissions
-    notificationService.requestPermissions();
+    // Request notification permissions (silently fails in Expo Go)
+    notificationService.requestPermissions().catch(() => {
+      // Silently handle - notifications have limitations in Expo Go
+    });
 
     return cleanup;
   }, []);
