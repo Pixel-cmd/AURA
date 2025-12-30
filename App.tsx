@@ -4,7 +4,6 @@ import * as Sentry from '@sentry/react-native';
 if (process.env.EXPO_PUBLIC_SENTRY_DSN) {
   Sentry.init({
     dsn: process.env.EXPO_PUBLIC_SENTRY_DSN,
-    enableInExpoDevelopment: false, // Disable in Expo Go
     debug: __DEV__, // Enable debug mode in development
     environment: __DEV__ ? 'development' : 'production',
     tracesSampleRate: __DEV__ ? 1.0 : 0.1, // 100% in dev, 10% in production
@@ -12,9 +11,10 @@ if (process.env.EXPO_PUBLIC_SENTRY_DSN) {
       // Filter out known non-critical errors
       if (event.exception) {
         const error = hint.originalException;
-        if (error && error.message) {
+        if (error && typeof error === 'object' && 'message' in error) {
+          const errorMessage = String(error.message);
           // Don't send Expo Go limitation warnings
-          if (error.message.includes('expo-notifications') && error.message.includes('Expo Go')) {
+          if (errorMessage.includes('expo-notifications') && errorMessage.includes('Expo Go')) {
             return null;
           }
         }
