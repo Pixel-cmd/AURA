@@ -209,7 +209,7 @@ export default function LoginScreen() {
                 onPress={handleAppleSignIn}
                 disabled={loading}
               >
-                <Text style={styles.socialButtonText}>🍎 {t('auth.apple')}</Text>
+                <Text style={[styles.socialButtonText, styles.appleButtonText]}>🍎 {t('auth.apple')}</Text>
               </TouchableOpacity>
             )}
 
@@ -344,6 +344,9 @@ const styles = StyleSheet.create({
   appleButton: {
     backgroundColor: '#000000',
     borderColor: '#000000',
+  },
+  appleButtonText: {
+    color: '#FFFFFF', // White text for black background
   },
   googleButton: {
     backgroundColor: '#FFFFFF',
